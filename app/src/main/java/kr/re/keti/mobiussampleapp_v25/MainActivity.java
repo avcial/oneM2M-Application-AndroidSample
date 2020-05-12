@@ -45,12 +45,18 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     private static AE ae = new AE();
     private static String TAG = "MainActivity";
     private String MQTTPort = "1883";
-    private String ServiceAEName = "ae-edu1";
+    private String ServiceAEName = "siot7";
+    public String getServiceAEName(){
+        return etAeName.getText().toString();
+    }
     private String MQTT_Req_Topic = "";
     private String MQTT_Resp_Topic = "";
     private MqttAndroidClient mqttClient = null;
     private EditText EditText_Address =null;
     private String Mobius_Address ="";
+    EditText etAeName;
+    EditText etCntPath;
+
 
     // Main
     public MainActivity() {
@@ -81,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         btnControl_Blue.setVisibility(View.INVISIBLE);
 
         btnAddr_Set.setFocusable(true);
+        etAeName = findViewById(R.id.etAeName);
+        etCntPath = findViewById(R.id.etCntPath);
+
 
         // Create AE and Get AEID
         //GetAEInfo();
@@ -361,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         @Override
         public void run() {
             try {
-                String sb = csebase.getServiceUrl() + "/" + ServiceAEName + "/" + ContainerName + "/" + "latest";
+                String sb = csebase.getServiceUrl() + "/" + getServiceAEName() + "/" + ContainerName + "/" + "latest";
 
                 URL mUrl = new URL(sb);
 
@@ -398,8 +407,10 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     class ControlRequest extends Thread {
         private final Logger LOG = Logger.getLogger(ControlRequest.class.getName());
         private IReceived receiver;
-        private String container_name = "cnt-led";
-
+        private String container_name = "home/cnt-led";
+        public String getContainer_name(){
+            return etCntPath.getText().toString();
+        }
         public ContentInstanceObject contentinstance;
         public ControlRequest(String comm) {
             contentinstance = new ContentInstanceObject();
@@ -410,7 +421,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         @Override
         public void run() {
             try {
-                String sb = csebase.getServiceUrl() +"/" + ServiceAEName + "/" + container_name;
+                String sb = csebase.getServiceUrl() +"/" + getServiceAEName() + "/" + getContainer_name();
 
                 URL mUrl = new URL(sb);
 
@@ -587,6 +598,8 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         private IReceived receiver;
         private String container_name = "cnt-co2"; //change to control container name
 
+
+
         public ContentSubscribeObject subscribeInstance;
         public SubscribeResource() {
             subscribeInstance = new ContentSubscribeObject();
@@ -600,7 +613,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         @Override
         public void run() {
             try {
-                String sb = csebase.getServiceUrl() + "/" + ServiceAEName + "/" + container_name;
+                String sb = csebase.getServiceUrl() + "/" + getServiceAEName() + "/" + container_name;
 
                 URL mUrl = new URL(sb);
 
